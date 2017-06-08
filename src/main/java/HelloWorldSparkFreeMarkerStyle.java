@@ -1,15 +1,14 @@
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import spark.Request;
-import spark.Response;
-import spark.Route;
+import org.bson.Document;
 import spark.Spark;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Map;
 
 import static spark.Spark.halt;
 
@@ -21,13 +20,22 @@ public class HelloWorldSparkFreeMarkerStyle {
         Configuration configuration = new Configuration(Configuration.VERSION_2_3_23);
         configuration.setClassForTemplateLoading(HelloWorldFreeMarkerStyle.class, "/");
 
+        MongoClient client = new MongoClient();
+        MongoDatabase database = client.getDatabase("course");
+        MongoCollection<Document> collection = database.getCollection("hello");
+
+        collection.drop();
+
+        collection.insertOne(new Document("name", "MongoDB"));
+
         Spark.get("/", (request, response) -> {
             StringWriter stringWriter = new StringWriter();
             try {
                 Template template = configuration.getTemplate("hello.ftl");
-                Map<String, Object> helloMap = new HashMap<>();
-                helloMap.put("name", "Giorgi The Beast");
-                template.process(helloMap, stringWriter);
+
+                Document document = collection.find().first();
+                template.process(document, stringWriter);
+
             } catch (IOException | TemplateException e) {
                 halt(500);
                 e.printStackTrace();
