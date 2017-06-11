@@ -1,4 +1,4 @@
-/*
+package excercise;/*
  * Copyright 2015 MongoDB, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,51 +16,46 @@
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.mongodb.client.model.Projections.excludeId;
+import static com.mongodb.client.model.Projections.fields;
+import static com.mongodb.client.model.Projections.include;
+import static com.mongodb.client.model.Sorts.descending;
 import static util.Helpers.printJson;
 
-public class FindTest {
+public class FindWithSortSkipLimitTest {
     public static void main(String[] args) {
         MongoClient client = new MongoClient();
         MongoDatabase database = client.getDatabase("course");
-        MongoCollection<Document> collection = database.getCollection("findTest");
+        MongoCollection<Document> collection = database.getCollection("findWithSortTest");
 
         collection.drop();
 
-        // insert 10 documents
+        // insert 100 documents with two random integers
         for (int i = 0; i < 10; i++) {
-            collection.insertOne(new Document("x", i));
+            for (int j = 0; j < 10; j++) {
+                collection.insertOne(new Document().append("i", i).append("j", j));
+            }
         }
 
-        System.out.println("Find one:");
-        Document first = collection.find().first();
-        printJson(first);
+        Bson projection = fields(include("i", "j"), excludeId());
+        Bson sort = descending("j", "i");
 
-        System.out.println("Find all with into: ");
-        List<Document> all = collection.find().into(new ArrayList<Document>());
+        List<Document> all = collection.find()
+                                       .projection(projection)
+                                       .sort(sort)
+                                       .skip(20)
+                                       .limit(50)
+                                       .into(new ArrayList<>());
+
         for (Document cur : all) {
             printJson(cur);
         }
-
-        System.out.println("Find all with iteration: ");
-        MongoCursor<Document> cursor = collection.find().iterator();
-        try {
-            while (cursor.hasNext()) {
-                Document cur = cursor.next();
-                printJson(cur);
-            }
-        } finally {
-            cursor.close();
-        }
-
-        System.out.println("Count:");
-        long count = collection.count();
-        System.out.println(count);
     }
 }

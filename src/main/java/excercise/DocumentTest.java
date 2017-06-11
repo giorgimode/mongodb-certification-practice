@@ -1,3 +1,5 @@
+package excercise;
+
 import org.bson.Document;
 import org.bson.types.ObjectId;
 

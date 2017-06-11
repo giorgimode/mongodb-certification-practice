@@ -1,4 +1,4 @@
-/*
+package excercise;/*
  * Copyright 2015 MongoDB, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,29 +18,40 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
-import java.util.ArrayList;
-
-import static com.mongodb.client.model.Filters.eq;
+import static java.util.Arrays.asList;
 import static util.Helpers.printJson;
 
-public class DeleteTest {
+public class InsertTest {
     public static void main(String[] args) {
         MongoClient client = new MongoClient();
-        MongoDatabase database = client.getDatabase("course");
-        MongoCollection<Document> collection = database.getCollection("test");
+        MongoDatabase db = client.getDatabase("course");
+        MongoCollection<Document> coll = db.getCollection("insertTest");
 
-        collection.drop();
+        coll.drop();
 
-        // insert 8 documents, with _id set to the value of the loop variable
-        for (int i = 0; i < 8; i++) {
-            collection.insertOne(new Document().append("_id", i));
-        }
+        Document smith = new Document("name", "Smith")
+                .append("age", 30)
+                .append("profession", "programmer");
 
-        collection.deleteOne(eq("_id", 4));
+        Document jones = new Document("name", "Jones")
+                .append("age", 25)
+                .append("profession", "hacker");
 
-        for (Document cur : collection.find().into(new ArrayList<>())) {
-            printJson(cur);
-        }
+        printJson(smith);
+
+        coll.insertOne(smith);
+        coll.insertOne(jones);
+
+        printJson(smith);
+        printJson(jones);
+
+        coll.drop();
+
+        coll.insertMany(asList(smith, jones));
+
+        printJson(smith);
+        printJson(jones);
     }
 }

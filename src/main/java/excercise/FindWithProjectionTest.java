@@ -1,4 +1,4 @@
-/*
+package excercise;/*
  * Copyright 2015 MongoDB, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,9 +28,12 @@ import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.gt;
 import static com.mongodb.client.model.Filters.lt;
+import static com.mongodb.client.model.Projections.excludeId;
+import static com.mongodb.client.model.Projections.fields;
+import static com.mongodb.client.model.Projections.include;
 import static util.Helpers.printJson;
 
-public class FindWithFilterTest {
+public class FindWithProjectionTest {
     public static void main(String[] args) {
         MongoClient client = new MongoClient();
         MongoDatabase database = client.getDatabase("course");
@@ -41,23 +44,22 @@ public class FindWithFilterTest {
         // insert 10 documents with two random integers
         for (int i = 0; i < 10; i++) {
             collection.insertOne(new Document()
-                    .append("x", new Random().nextInt(2))
-                    .append("y", new Random().nextInt(100)));
+                                 .append("x", new Random().nextInt(2))
+                                 .append("y", new Random().nextInt(100))
+                                 .append("i", i));
         }
-
-//        Bson filter = new Document("x", 0)
-//        .append("y", new Document("$gt", 10).append("$lt", 90));
 
         Bson filter = and(eq("x", 0), gt("y", 10), lt("y", 90));
 
-        List<Document> all = collection.find(filter).into(new ArrayList<>());
+//        Bson projection = new Document("y", 1).append("i", 1).append("_id", 0);
+        Bson projection = fields(include("y", "i"), excludeId());
+
+        List<Document> all = collection.find(filter)
+                                       .projection(projection)
+                                       .into(new ArrayList<Document>());
 
         for (Document cur : all) {
             printJson(cur);
         }
-
-        long count = collection.count(filter);
-        System.out.println();
-        System.out.println(count);
     }
 }
