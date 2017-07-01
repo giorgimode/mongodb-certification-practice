@@ -6,11 +6,18 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="mongo" />
+        <module name="blog" />
+        <module name="exercises" />
+        <module name="M101J" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="mongo" target="1.8" />
+      <module name="base" target="1.5" />
+      <module name="blog" target="1.8" />
+      <module name="exercises" target="1.8" />
+      <module name="M101J" target="1.8" />
+      <module name="mongo" target="1.5" />
+      <module name="mongo (1) (com.giorgi)" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
