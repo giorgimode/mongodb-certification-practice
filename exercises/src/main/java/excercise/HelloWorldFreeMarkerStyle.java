@@ -19,7 +19,7 @@ public class HelloWorldFreeMarkerStyle {
         StringWriter stringWriter = new StringWriter();
 
         Template template = configuration.getTemplate("hello.ftl");
-        Map<String, Object> helloMap = new HashMap<String, Object>();
+        Map<String, Object> helloMap = new HashMap<>();
         helloMap.put("name", "Giorgi The Beast");
         template.process(helloMap, stringWriter);
 

@@ -13,9 +13,6 @@ import java.util.Map;
 
 import static spark.Spark.halt;
 
-/**
- * Created by modeg on 6/4/2017.
- */
 public class SparkFruitPicker {
     public static void main(String[] args) {
         Configuration configuration = new Configuration(Configuration.VERSION_2_3_23);
