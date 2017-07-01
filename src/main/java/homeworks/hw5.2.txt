@@ -1,0 +1,57 @@
+For this problem, we have used a subset of the data you previously used in zips.json, not the full set. For this set, there are only 200 documents (and 200 zip codes), and all of them are in New York, Connecticut, New Jersey, and California.
+You can download the handout and perform your analysis on your machine with
+mongoimport --drop -d test -c zips small_zips.json
+Note
+
+This is raw data from the United States Postal Service. If you notice that while importing, there are a few duplicates fear not, this is expected and will not affect your answer.
+
+
+Once you've generated your aggregation query and found your answer, select it from the choices below.
+Please use the Aggregation pipeline to solve this problem:
+44805
+55921
+67935
+71819
+82426
+93777
+--------------------------
+answer is 44805
+
+> use test
+
+> db.zips.aggregate([{
+  	$match: {
+  		$or: [{
+  			state: "CA"
+  		},
+  		{
+  			state: "NY"
+  		}]
+  	}
+  },
+  {
+  	$group: {
+  		_id: {
+  			city: "$city",
+  			state: "$state"
+  		},
+  		pop: {
+  			$sum: "$pop"
+  		}
+  	}
+  },
+  {
+  	$match: {
+  		pop: {
+  			$gt: 25000
+  		}
+  	}
+  },
+  {
+  	$group: {
+  		_id: 0,
+  		avg_pop: {
+  			$avg: "$pop"
+  		}
+  	}
+  }])

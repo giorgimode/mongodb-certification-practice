@@ -1,4 +1,4 @@
-package excercise;
+package homeworks;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
