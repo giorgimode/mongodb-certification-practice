@@ -1,4 +1,4 @@
-package excercise;
+Supposed we executed the following Java code. How many animals will be inserted into the "animals" collection?
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -22,3 +22,7 @@ public class InsertTest {
             animals.insertOne(animal);
         }
 }
+
+--------
+
+answer 1
